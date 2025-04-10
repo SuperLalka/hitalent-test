@@ -13,7 +13,7 @@ services:
     depends_on:
       - postgres
     volumes:
-     - .:/src
+     - .:/app
     env_file:
       - ./.envs_example/.fastapi
       - ./.envs_example/.postgres

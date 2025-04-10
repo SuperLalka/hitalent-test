@@ -1,0 +1,31 @@
+version: '3'
+
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: ./compose/fastapi/Dockerfile
+    container_name: ht_test_fastapi
+    depends_on:
+      - postgres
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: hitalent_test_db
+      POSTGRES_USER: debug
+      POSTGRES_PASSWORD: debug
+    ports:
+      - "80:80"
+    command: bash -c "pytest -s --disable-warnings"
+
+  postgres:
+    image: postgres:16
+    container_name: ht_test_postgres
+    restart: always
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: hitalent_test_db
+      POSTGRES_USER: debug
+      POSTGRES_PASSWORD: debug
