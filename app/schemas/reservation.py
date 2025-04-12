@@ -1,10 +1,9 @@
 import datetime
+from typing import Optional
 
-from pydantic import field_validator, model_validator, BaseModel, UUID4
+from pydantic import field_validator, BaseModel, UUID4
 
-from app.repository.filters.reservation import ReservationFilter
-from app.repository.reservation import ReservationRepository
-from app.routers.depends import get_db
+from app.config.settings import settings
 
 
 class ReservationBase(BaseModel):
@@ -12,19 +11,10 @@ class ReservationBase(BaseModel):
     reservation_time: datetime.datetime
     duration_minutes: int
 
-    table_id: str
+    table_id: int
 
 
 class ReservationInput(ReservationBase):
-
-    @model_validator(mode='before')
-    async def validate(self):
-        if await ReservationRepository(get_db(), filter=ReservationFilter(
-                reservation_time=self.reservation_time,
-                reservation_time_end=self.reservation_time + datetime.timedelta(minutes=self.duration_minutes)
-        )).is_exists():
-            raise ValueError('The table for the specified time has been reserved.')
-        return self
 
     @field_validator('duration_minutes', mode='before')
     @classmethod
@@ -35,10 +25,14 @@ class ReservationInput(ReservationBase):
 
     @field_validator('reservation_time', mode='before')
     @classmethod
-    def validate_reservation_time(cls, value: datetime.datetime):
-        if value < datetime.datetime.now():
+    def validate_reservation_time(cls, value: str):
+        if datetime.datetime.strptime(value, settings.DATETIME_PATTERN) < datetime.datetime.now():
             raise ValueError('You cannot specify past time for reservation.')
         return value
+
+
+class ReservationUpdate(ReservationInput):
+    table_id: Optional[int] = None
 
 
 class ReservationOutput(ReservationBase):

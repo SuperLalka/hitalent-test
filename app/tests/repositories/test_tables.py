@@ -7,12 +7,13 @@ from app.repository.table import TableRepository
 from app.schemas.table import TableInput
 from app.tests.factories import TableFactory
 from app.tests.fixtures import LOCATIONS_EXAMPLES
+from app.tests.utils.tables import create_table
 
 
-async def test_create(db: Session, faker: Faker) -> None:
+async def test_create_table(db: Session, faker: Faker) -> None:
     new_table_data = {
         "name": faker.word(),
-        "seats": faker.random_int(1, 6),
+        "seats": faker.random_int(1, 5),
         "location": faker.random_element(LOCATIONS_EXAMPLES),
     }
 
@@ -23,57 +24,55 @@ async def test_create(db: Session, faker: Faker) -> None:
     assert table.location == new_table_data['location']
 
 
-async def test_exists_by_id(db: Session) -> None:
-    table = TableFactory()
+async def test_exists_by_id_table(db: Session, table: TableFactory) -> None:
     assert await TableRepository(db).exists_by_id(table.id)
 
 
 # TODO: need filter
-async def test_is_exists(db: Session) -> None:
-    table_factory = TableFactory()
+async def test_is_exists_table(db: Session, table: TableFactory) -> None:
     assert await TableRepository(db).is_exists()
 
 
-async def test_get_all(db: Session) -> None:
+async def test_get_all_table(db: Session) -> None:
     tables_num = random.randint(3, 6)
-    [TableFactory() for _ in range(tables_num)]
+    [await create_table(db) for _ in range(tables_num)]
 
     tables = await TableRepository(db).get_all()
-    assert tables.count() == tables_num
+    assert len(tables) == tables_num
 
 
-async def test_get_by_id(db: Session) -> None:
-    table_factory = TableFactory()
-    table = await TableRepository(db).get_by_id(table_factory.id)
+async def test_get_by_id_table(db: Session, table: TableFactory) -> None:
+    table_obj = await TableRepository(db).get_by_id(table.id)
 
-    assert table.id == table_factory.id
-    assert table.name == table_factory.name
-    assert table.seats == table_factory.seats
-    assert table.location == table_factory.location
+    assert table_obj.id == table.id
+    assert table_obj.name == table.name
+    assert table_obj.seats == table.seats
+    assert table_obj.location == table.location
 
 
-async def test_update(db: Session, faker: Faker) -> None:
-    table_factory = TableFactory()
+async def test_update_table(db: Session, faker: Faker) -> None:
+    table = await create_table(db)
 
     new_table_data = {
         "name": faker.word(),
-        "seats": faker.random_int(1, 6),
-        "location": faker.random_element(LOCATIONS_EXAMPLES),
+        "seats": faker.random_int(6, 10),
+        "location": faker.sentence(nb_words=3),
     }
+    table_in = TableInput(**new_table_data)
 
-    assert table_factory.name != new_table_data['name']
-    assert table_factory.seats != new_table_data['seats']
-    assert table_factory.location != new_table_data['location']
+    assert table.name != table_in.name
+    assert table.seats != table_in.seats
+    assert table.location != table_in.location
 
-    await TableRepository(db).update(table_factory.id, new_table_data)
+    await TableRepository(db).update(table, table_in)
 
-    assert table_factory.name == new_table_data['name']
-    assert table_factory.seats == new_table_data['seats']
-    assert table_factory.location == new_table_data['location']
+    assert table.name == table_in.name
+    assert table.seats == table_in.seats
+    assert table.location == table_in.location
 
 
-async def test_delete(db: Session) -> None:
-    table_factory = TableFactory()
-    await TableRepository(db).delete(table_factory.id)
+async def test_delete_table(db: Session) -> None:
+    table = await create_table(db)
+    await TableRepository(db).delete(table)
 
-    assert not await TableRepository(db).exists_by_id(table_factory.id)
+    assert not await TableRepository(db).exists_by_id(table.id)

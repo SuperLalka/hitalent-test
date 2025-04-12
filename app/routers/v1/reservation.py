@@ -1,7 +1,8 @@
-import uuid
+
 from typing import List
 
 from fastapi import APIRouter, Body, Request
+from pydantic import UUID4
 
 from app.routers.depends import SessionDep
 from app.schemas.reservation import ReservationInput, ReservationOutput
@@ -37,6 +38,6 @@ async def create_reservation(
 async def delete_reservation(
     request: Request,
     session: SessionDep,
-    reservation_id: uuid.uuid4,
+    reservation_id: UUID4,
 ):
     return await ReservationService(session).delete(reservation_id)

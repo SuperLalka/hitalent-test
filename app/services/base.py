@@ -1,6 +1,7 @@
-from typing import Any, List, Union
+from typing import Any, Sequence, Union
 
 from fastapi import HTTPException
+from sqlalchemy import Row
 from sqlalchemy.orm import Session
 
 from app.repository.base import BaseRepository
@@ -18,7 +19,7 @@ class BaseService:
     async def is_exists(self, _id: Union[str, int]) -> bool:
         return await self.repository.exists_by_id(_id)
 
-    async def get_all(self) -> List[Any]:
+    async def get_all(self) -> Sequence[Row]:
         return await self.repository.get_all()
 
     async def get_by_id(self, _id: Union[str, int]) -> Any:

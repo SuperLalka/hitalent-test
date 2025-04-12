@@ -1,28 +1,33 @@
-import datetime
 
 import factory
-from pytest_factoryboy import register
+from factory.alchemy import SQLAlchemyModelFactory
+from sqlalchemy.orm import Session
 
+from app.config.database import engine
 from app.models import Reservation, Table
 from app.tests.fixtures import LOCATIONS_EXAMPLES
 
+session = Session(engine)
 
-@register
-class TableFactory(factory.Factory):
+
+class TableFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Table
+        sqlalchemy_session = session
+        sqlalchemy_session_persistence = 'commit'
 
     name = factory.Sequence(lambda n: 'Table {}'.format(n))
-    seats = factory.Faker('random_int', min=1, max=6)
+    seats = factory.Faker('random_int', min=1, max=5)
     location = factory.Faker('random_element', elements=LOCATIONS_EXAMPLES)
 
 
-@register
-class ReservationFactory(factory.Factory):
+class ReservationFactory(SQLAlchemyModelFactory):
     class Meta:
         model = Reservation
+        sqlalchemy_session = session
+        sqlalchemy_session_persistence = 'commit'
 
     customer_name = factory.Faker('name', locale='ru_RU')
-    reservation_time = factory.Faker('datetime', start_datetime=datetime.datetime.now())
+    reservation_time = factory.Faker('future_date', end_date='+30d')
     duration_minutes = factory.Faker('random_int', min=1, max=600)
-    table_id = factory.Faker('random_int')
+    table = factory.SubFactory(TableFactory)

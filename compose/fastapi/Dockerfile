@@ -14,7 +14,6 @@ COPY poetry.lock pyproject.toml /app/
 RUN poetry config virtualenvs.create false \
   && poetry install --no-interaction --no-ansi
 
-COPY ./alembic /app/alembic
-COPY ./alembic.ini /app/
+COPY ./app /app
 
 COPY ./compose/fastapi/prestart.sh .

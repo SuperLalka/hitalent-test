@@ -17,7 +17,7 @@ services:
       POSTGRES_PASSWORD: debug
     ports:
       - "80:80"
-    command: bash -c "pytest -s --disable-warnings"
+    command: bash -c "pytest --disable-warnings"
 
   postgres:
     image: postgres:16

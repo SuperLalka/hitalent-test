@@ -11,7 +11,6 @@ class BaseFilter:
         self.fields = fields
 
     def __call__(self, base_query, operator=and_):
-        print(base_query)
         query = []
 
         for name, value in self.fields.items():
@@ -29,10 +28,6 @@ class BaseFilter:
 
             elif hasattr(self.orm_class, name):
                 query.append(getattr(self.orm_class, name) == value)
-
-            print(query)
-
-        print(base_query)
 
         if not query:
             return base_query

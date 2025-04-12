@@ -1,7 +1,6 @@
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import declarative_base, Session
 
 from .settings import settings
 
@@ -12,3 +11,7 @@ Base = declarative_base()
 
 def init_db(session: Session) -> None:
     Base.metadata.create_all(engine)
+
+
+def drop_db(session: Session) -> None:
+    Base.metadata.drop_all(engine)

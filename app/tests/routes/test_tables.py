@@ -6,25 +6,25 @@ from sqlalchemy.orm import Session
 
 from app.config.settings import settings
 from app.repository.table import TableRepository
-from app.tests.factories import TableFactory
 from app.tests.fixtures import LOCATIONS_EXAMPLES
+from app.tests.utils.tables import create_table
 
 
-def test_get_all_tables(client: TestClient) -> None:
+async def test_get_all_tables(client: TestClient, db: Session) -> None:
     tables_num = random.randint(3, 6)
-    [TableFactory() for _ in range(tables_num)]
+    [await create_table(db) for _ in range(tables_num)]
 
     response = client.get(f"{settings.API_V1_STR}/tables/")
     assert response.status_code == 200
 
     content = response.json()
-    assert len(content["data"]) == tables_num
+    assert len(content) == tables_num
 
 
-def test_create_table(client: TestClient, faker: Faker, db: Session) -> None:
+async def test_create_table(client: TestClient, faker: Faker, db: Session) -> None:
     data = {
         "name": faker.word(),
-        "seats": faker.random_int(1, 6),
+        "seats": faker.random_int(1, 5),
         "location": faker.random_element(LOCATIONS_EXAMPLES),
     }
     response = client.post(
@@ -39,23 +39,20 @@ def test_create_table(client: TestClient, faker: Faker, db: Session) -> None:
     assert content["seats"] == data["seats"]
     assert content["location"] == data["location"]
 
-    assert TableRepository(db).exists_by_id(content['id'])
+    assert await TableRepository(db).exists_by_id(content['id'])
 
 
-def test_delete_table(client: TestClient, db: Session) -> None:
-    table = TableFactory()
+async def test_delete_table(client: TestClient, db: Session) -> None:
+    table = await create_table(db)
     response = client.delete(
         f"{settings.API_V1_STR}/tables/{table.id}",
     )
-    assert response.status_code == 200
+    assert response.status_code == 204
 
-    content = response.json()
-    assert content["message"] == "Object deleted successfully"
-
-    assert not TableRepository(db).exists_by_id(table.id)
+    assert not await TableRepository(db).exists_by_id(table.id)
 
 
-def test_delete_table_not_found(client: TestClient) -> None:
+async def test_delete_table_not_found(client: TestClient) -> None:
     fake_table_id = random.randint(1, 100)
     response = client.delete(
         f"{settings.API_V1_STR}/tables/{fake_table_id}",

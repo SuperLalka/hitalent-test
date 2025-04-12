@@ -10,7 +10,10 @@ load_dotenv()
 class Settings(BaseSettings):
     # FastAPI
     DEBUG: Optional[bool] = os.getenv("DEBUG") == "True"
+
+    # Common
     API_V1_STR: str = "/api/v1"
+    DATETIME_PATTERN: str = '%Y-%m-%dT%H:%M:%S'
 
     # PostgreSQL
     POSTGRES_HOST: Optional[str] = os.getenv("POSTGRES_HOST")
