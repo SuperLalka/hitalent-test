@@ -45,12 +45,12 @@ class BaseRepository:
         return bool(result)
 
     async def get_all(self) -> Sequence[Row]:
-        result = self.session.execute(self.base_query).scalars()
-        return self.object_mapping(result.all())
+        results = self.session.execute(self.base_query).scalars()
+        return self.object_mapping(results.all())
 
     async def get_by_id(self, _id: Any) -> Optional[Row]:
-        obj = self.session.query(self.model).filter(self.model.id == _id).first()
-        return obj
+        result = self.session.query(self.model).filter(self.model.id == _id).first()
+        return result
         # return self.object_mapping(obj)
 
     async def update(self, obj: Row, data: Any) -> Row:

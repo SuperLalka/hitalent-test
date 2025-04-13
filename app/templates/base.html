@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<title>{% block title %}HitalentCar{% endblock title %}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		{% block css %}
+
+		<!-- Latest compiled and minified Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-SgOJa3DmI69IUzQ2PVdRZhwQ+dy64/BUtbMJw1MZ8t5HZApcHrRKUc4W0kG879m7"
+          crossorigin="anonymous"
+    >
+		<!-- Your stuff: Third-party CSS libraries go here -->
+		<!-- This file stores project-specific CSS -->
+		<link href="/static/css/styles.css" rel="stylesheet">
+
+		{% endblock %}
+
+	</head>
+
+	<body>
+		<main class="container">
+
+			{% if messages %}
+				{% for message in messages %}
+					<div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}</div>
+				{% endfor %}
+			{% endif %}
+
+			{% block content %}
+			<div class="content_block">
+				<div class="row d-flex justify-content-center">
+					<button class="col-6 left_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasLeft" aria-controls="offcanvasLeft">
+					  Список столиков
+					</button>
+					<button class="col-6 right_button" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+						Забронировать столик
+					</button>
+				</div>
+
+				<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasLeft" aria-labelledby="offcanvasExampleLabel">
+				  <div class="offcanvas-header">
+				    <h5 class="offcanvas-title" id="offcanvasExampleLabel">Список столиков</h5>
+				    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+				  </div>
+				  <div class="offcanvas-body">
+					  <div class="list-group">
+						  {% for table in tables %}
+							  <a href="ssr/tables/{{ table.id }}" class="list-group-item list-group-item-action" aria-current="true">
+							    {{ table.name }} / {{ table.location }}
+							  </a>
+						  {% endfor %}
+						</div>
+				</div>
+			</div>
+
+			<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+			  <div class="offcanvas-header">
+			    <h5 id="offcanvasRightLabel">Забронировать столик</h5>
+			    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+			  </div>
+			  <div class="offcanvas-body">
+			    <form class="create_reservation_form d-flex flex-wrap justify-content-center">
+				    <div class="m-3 w-75">
+					    <label class="form-label" for="customerNameInput">Заказчик</label>
+					    <input type="text" class="form-control" id="customerNameInput" placeholder="Имя и фамилия" required/>
+					  </div>
+				    <div class="m-3 w-75">
+              <label class="form-label" for="tablesInputGroupSelect">Столик</label>
+						  <select class="form-select" id="tablesInputGroupSelect" required>
+							  {% for table in tables %}
+						      <option value="{{ table.id }}">{{ table.name }} / {{ table.location }}</option>
+							  {% endfor %}
+						  </select>
+						</div>
+				    <div class="m-3 w-75">
+					    <label class="form-label" for="datetimeInput">Дата и время</label>
+	            <input id="datetimeInput" class="form-control" type="datetime-local" required/>
+				    </div>
+				    <div class="m-3 w-75">
+              <label class="form-label" for="durationInput">Продолжительность</label>
+	            <input id="durationInput" class="form-control" type="number" min=30 max=300 placeholder="Минуты" required/>
+				    </div>
+
+            <button class="btn btn-outline-secondary w-100" type="submit">Забронировать</button>
+					</form>
+			  </div>
+			</div>
+			{% endblock content %}
+
+		</div>
+		</main>
+
+		<!-- Le javascript
+		================================================== -->
+		<!-- Placed at the end of the document so the pages load faster -->
+		<!-- Bootstrap JS and its dependencies-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
+            crossorigin="anonymous">
+    </script>
+		<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+		        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+		        crossorigin="anonymous">
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/js/bootstrap.min.js"
+		        integrity="sha384-VQqxDN0EQCkWoxt/0vsQvZswzTHUVOImccYmSyhJTp7kGtPed0Qcx8rK9h9YEgx+"
+		        crossorigin="anonymous">
+		</script>
+		<!-- Your stuff: Third-party javascript libraries go here -->
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+		        crossorigin="anonymous"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<script	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.7.14/js/bootstrap-datetimepicker.min.js"></script>
+		<!-- place project specific Javascript in this file -->
+		<script src="/static/js/scripts.js"></script>
+
+		{% block javascript %}{% endblock javascript %}
+	</body>
+</html>

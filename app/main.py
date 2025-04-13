@@ -1,7 +1,9 @@
 import logging.config
+import os
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError, ResponseValidationError, WebSocketRequestValidationError
+from starlette.staticfiles import StaticFiles
 from starlette.responses import RedirectResponse
 
 from app.config.logging import LOGGING
@@ -18,6 +20,10 @@ app = FastAPI(
     docs_url="/documentation/docs",
     debug=settings.DEBUG,
 )
+
+# Configure Static
+os.makedirs('app/static', mode=0o777, exist_ok=True)  # TODO: tests stub, remove
+app.mount("/static", StaticFiles(directory="app/static"))
 
 
 @app.on_event("startup")

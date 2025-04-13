@@ -1,7 +1,7 @@
 import datetime
 from typing import Optional
 
-from pydantic import field_validator, BaseModel, UUID4
+from pydantic import field_validator, BaseModel, UUID4, computed_field
 
 from app.config.settings import settings
 
@@ -19,7 +19,7 @@ class ReservationInput(ReservationBase):
     @field_validator('duration_minutes', mode='before')
     @classmethod
     def validate_duration(cls, value: int):
-        if value < 0:
+        if int(value) < 0:
             raise ValueError('Duration must be a positive number.')
         return value
 
@@ -37,3 +37,11 @@ class ReservationUpdate(ReservationInput):
 
 class ReservationOutput(ReservationBase):
     id: UUID4
+
+    created_at: datetime.datetime
+    updated_at: datetime.datetime
+
+    @computed_field
+    @property
+    def reservation_time_end(self) -> datetime.datetime:
+        return self.reservation_time + datetime.timedelta(minutes=self.duration_minutes)

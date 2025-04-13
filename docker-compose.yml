@@ -22,7 +22,8 @@ services:
     entrypoint: /start-reload.sh
 
   postgres:
-    image: postgres:16
+    build:
+      dockerfile: ./compose/postgres/Dockerfile
     container_name: ht_postgres
     restart: always
     volumes:

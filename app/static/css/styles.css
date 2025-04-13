@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&display=swap');
+
+body, main {
+    min-height: 100vh;
+    background-color: #349579;
+    background-image: url("/static/images/background-blocks.png");
+    background-repeat: repeat;
+}
+
+.content_block, .content_block > div {
+    height: 100vh;
+}
+
+.left_button, .right_button {
+    border: 1px solid black;
+    border-radius: .25rem;
+    cursor: pointer;
+    display: inline-block;
+    user-select: none;
+
+    font-family: "Caveat", cursive;
+    font-size: 5rem;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    color: #141619;
+    line-height: 1.5;
+    text-decoration: none;
+    text-align: center;
+    vertical-align: middle;
+
+    background-color: cadetblue;
+    background-image: url("/static/images/main-page-background.jpg");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-blend-mode: screen;
+
+    transition: 0.5s linear;
+}
+
+.left_button {
+    background-position-x: left;
+}
+
+.left_button:hover {
+    transform: scale(105%, 105%);
+}
+
+.right_button {
+    background-position-x: right;
+}
+
+.right_button:hover {
+    transform: scale(105%, 105%);
+}
+
+.table_detail_block {
+    background: #161618;
+    color: white;
+    height: 100%;
+    margin-bottom: 60px;
+    padding: 8px 16px;
+    text-align: center;
+}
+
+.return_home_block {
+    background: black;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+
+    height: 60px;
+    width: 100%;
+    font-family: "Caveat", cursive;
+    font-size: 40px;
+    text-align: center;
+    align-content: center;
+    color: white;
+    text-decoration: none;
+
+    transition: all 1s;
+}
+
+.return_home_block:hover {
+    background: transparent;
+    color: black;
+}

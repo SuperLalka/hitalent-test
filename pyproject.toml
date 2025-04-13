@@ -24,7 +24,7 @@ Faker = "37.1.0"
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
 minversion = "8.0"
-addopts = "-ra -q"
+addopts = "-ra -q -p no:cacheprovider"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
